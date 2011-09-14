@@ -32,6 +32,9 @@ namespace :install do
   desc "Install dotjs daemon"
   task :daemon do
     home = ENV['HOME']
+    if !FileTest::directory?("#{home}/bin")
+      Dir::mkdir("#{home}/bin")
+    end
     cp "bin/djsd", "#{home}/bin", :verbose => true
   end
 
