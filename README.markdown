@@ -65,7 +65,7 @@ the returned JavaScript.
 ## Install
 
     git clone https://github.com/glenbot/dotjs-ubuntu.git
-    cd dotjs
+    cd dotjs-ubuntu
     rake install
 
 After installation add the following line to your crontab
