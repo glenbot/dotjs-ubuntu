@@ -50,9 +50,9 @@ dotjs = Class.new(WEBrick::HTTPServlet::AbstractServlet) do
 end
 
 if daemon_mode
-  server = WEBrick::HTTPServer.new(:Port => 3131, :ServerType => WEBrick::Daemon)
+  server = WEBrick::HTTPServer.new(:Port => 3131, :AccessLog => [], :ServerType => WEBrick::Daemon)
 else
-  server = WEBrick::HTTPServer.new(:Port => 3131)
+  server = WEBrick::HTTPServer.new(:Port => 3131, :AccessLog => [])
 end
 
 server.mount('/', dotjs)
