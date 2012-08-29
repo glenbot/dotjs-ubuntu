@@ -100,6 +100,10 @@ whichever is your favorite.
    stick JavaScript in ~/.js. Do
    you know what I'm saying?"
 
+## Windows
+
+- [dotjs-win](https://github.com/p3lim/dotjs-win)
+
 ## Other Browers
 
 - [Firefox Add-on](https://github.com/rlr/dotjs-addon)
