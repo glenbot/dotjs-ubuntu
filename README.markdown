@@ -80,10 +80,8 @@ For the impatient run the daemon right away
 
 For the patient reboot and enjoy!
 
-## Chromium vs Google Chrome
-
-Multiple Chromes installed? Drag builds/dotjs.crx to
-whichever is your favorite.
+Then drag builds/dotjs.crx to your favorite
+Google Chrome.
 
 ## Uninstall
 
