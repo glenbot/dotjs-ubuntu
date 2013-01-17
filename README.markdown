@@ -84,8 +84,9 @@ For the impatient run the daemon right away
 
 For the patient reboot and enjoy!
 
-Then drag builds/dotjs.crx to your favorite
-Google Chrome.
+Then install the Google Chrome extension:
+
+https://chrome.google.com/webstore/detail/dotjs/dlnccnmhpmdidoiecanghgienhoglnim
 
 ## Uninstall
 
