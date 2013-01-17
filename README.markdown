@@ -86,7 +86,7 @@ For the patient reboot and enjoy!
 
 Then install the Google Chrome extension:
 
-https://chrome.google.com/webstore/detail/dotjs/dlnccnmhpmdidoiecanghgienhoglnim
+http://bit.ly/dotjs
 
 ## Uninstall
 
