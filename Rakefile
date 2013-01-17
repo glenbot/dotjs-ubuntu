@@ -26,6 +26,7 @@ namespace :install do
   task :done do
     puts "\e[1m\e[32mdotjs installation worked\e[0m"
     puts "Add `@reboot /path/to/home/bin/djsd -d` to your crontab"
+    puts "open https://localhost:3131 in chrome to enable ssl"
   end
 
   desc "Install dotjs daemon"

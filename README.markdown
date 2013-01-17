@@ -84,6 +84,8 @@ For the impatient run the daemon right away
 
 For the patient reboot and enjoy!
 
+Now open https://localhost:3131 in Chrome and enable the SSL.
+
 Then install the Google Chrome extension:
 
 http://bit.ly/dotjs
