@@ -11,7 +11,7 @@ if (%w( -h --help -help help ) & ARGV).length > 0
 end
 
 if ARGV.include?('-v')
-  puts "djsd 1.3"
+  puts "djsd 2.0"
   exit
 end
 
@@ -20,15 +20,11 @@ if ARGV.include?('-d')
 end
 
 require 'webrick'
+require 'webrick/https'
 
 dotjs = Class.new(WEBrick::HTTPServlet::AbstractServlet) do
   def do_GET(request, response)
-    file    = File.expand_path("~/.js/#{request.path.gsub('/','')}")
-    default = File.expand_path("~/.js/default.js")
-
-    body = "// dotjs is working! //\n"
-    body << File.read(default) + "\n" if File.file?(default)
-    body << File.read(file) if File.file?(file)
+    body = build_body(request.path)
 
     response.status = body.empty? ? 204 : 200
     if origin = detect_origin(request)
@@ -36,6 +32,25 @@ dotjs = Class.new(WEBrick::HTTPServlet::AbstractServlet) do
     end
     response['Content-Type'] = 'text/javascript'
     response.body = body
+  end
+
+  def build_body(path)
+    files = [File.expand_path("~/.js/default.js")]
+    paths = path.gsub('/','').split('.')
+
+    until paths.empty?
+      file = File.expand_path("~/.js/#{paths.join('.')}")
+      files << file if File.file?(file)
+      paths.shift
+    end
+
+    body = "// dotjs is working! //\n"
+
+    files.each do |file|
+      body << File.read(file) + "\n" if File.file?(file)
+    end
+
+    body
   end
 
   def detect_origin(req)
@@ -49,12 +64,26 @@ dotjs = Class.new(WEBrick::HTTPServlet::AbstractServlet) do
   end
 end
 
+ssl_info = DATA.read
+ssl_cert = ssl_info.scan(/(-----BEGIN CERTIFICATE-----.+?-----END CERTIFICATE-----)/m)[0][0]
+ssl_key  = ssl_info.scan(/(-----BEGIN RSA PRIVATE KEY-----.+?-----END RSA PRIVATE KEY-----)/m)[0][0]
+
+server_options = {
+  :BindAddress => "127.0.0.1",
+  :Port => 3131,
+  :AccessLog => [],
+  :SSLEnable => true,
+  :SSLVerifyClient => OpenSSL::SSL::VERIFY_NONE,
+  :SSLPrivateKey => OpenSSL::PKey::RSA.new(ssl_key),
+  :SSLCertificate => OpenSSL::X509::Certificate.new(ssl_cert),
+  :SSLCertName => [["CN", WEBrick::Utils::getservername]],
+}
+
 if daemon_mode
-  server = WEBrick::HTTPServer.new(:Port => 3131, :ServerType => WEBrick::Daemon)
-else
-  server = WEBrick::HTTPServer.new(:Port => 3131)
+  server_options[:ServerType] = WEBrick::Daemon
 end
 
+server = WEBrick::HTTPServer.new(server_options)
 server.mount('/', dotjs)
 
 %w( INT TERM ).each do |sig|
@@ -62,3 +91,33 @@ server.mount('/', dotjs)
 end
 
 server.start
+
+__END__
+-----BEGIN CERTIFICATE-----
+MIIB9TCCAV4CCQCO1/0PIZhK/jANBgkqhkiG9w0BAQUFADA/MQswCQYDVQQGEwJV
+UzETMBEGA1UECBMKQ2FsaWZvcm5pYTELMAkGA1UEBxMCU0YxDjAMBgNVBAoTBWRv
+dGpzMB4XDTEzMDExNzE4MDQyNVoXDTE0MDExNzE4MDQyNVowPzELMAkGA1UEBhMC
+VVMxEzARBgNVBAgTCkNhbGlmb3JuaWExCzAJBgNVBAcTAlNGMQ4wDAYDVQQKEwVk
+b3RqczCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAzWNyNzpcDXkZMe3kZPHD
+9Uk3I/y/Ak3v4yavl7MvIFaLwjOE8lSBxnkhZJQx7/4SxME/dC2qBskAS9H9PCHa
+o5Ae8CDxgOrKQthhgQdiO3uSUhg1w8EpMxdzngU0pQdHPZNM0rEKfC6qG6dKeH7N
+vPIC4IYPiJqO+g6TIzWkklMCAwEAATANBgkqhkiG9w0BAQUFAAOBgQA5KDuyJmUf
+GOzglLQEXueRFEcHF7b+ltom3lZUtluhQk/wWLwJybs+VwHJFGtGOWrQkf4nRkwU
+HOQgbx0NCQgin1HPiPSOIRcRR0L4bJdvSt8sVBLhhTWZ0w4sa9lfNsbadGPpJPrr
+ywvVjgvlZ/3qa1O7r70Hwb5up4KAG65a2A==
+-----END CERTIFICATE-----
+-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQDNY3I3OlwNeRkx7eRk8cP1STcj/L8CTe/jJq+Xsy8gVovCM4Ty
+VIHGeSFklDHv/hLEwT90LaoGyQBL0f08IdqjkB7wIPGA6spC2GGBB2I7e5JSGDXD
+wSkzF3OeBTSlB0c9k0zSsQp8Lqobp0p4fs288gLghg+Imo76DpMjNaSSUwIDAQAB
+AoGAe2YHRlVC3zllwNDMCzYSZPmzLmT5IdpPiWtBzmPyqXw2BdzMQIgzXFqEjJhZ
+FHbTMfFlPVj+MYtsKSGmAw3X/J/ZwM/VOzjuAa9ygeJWW7EJwzxJmb4lG8yQeSbQ
+cBNCWPtgRRUflD7v1fCuOJ4DzEd5Bb3kTBfyEKShcVy8QVECQQDn35JjYtDkLF3U
+VkaF4QyCWqgOmr3X+pNoSW3Yx2I+jp2HG3qHY5fV0B0PNpdencdpWn/kG5+pMb00
+V8InmtV5AkEA4sJlFVxsaIXPB+45CZt2dLSkdyA4jaqv+rYi/jJZyDsXSd174ukM
+u0j4jPwiN9S2xAc79tf/q7mEdNh7yB2vKwJAD7AOpW7AF0/xITadGt25DPC5QhOy
+GHS5mGqvZeVHflgDzGpNhe91DGBCNw9IenxOS5B16qb7zGSzGmF9n1RYcQJAR0+e
+/mK8bPp3qyTNpynOzNDqT9RANL0S7qNMyegHuCJtJnuStD9aE6PVFnFMSYaJm4gy
+4WP4MYb8Esrp0nsTVQJAPvvZpLdYoDXPGtOHaMB19i3z7XEMohQpGiUvA+J5wjOa
+smJzPv9APXqdZoo6NB+4EOk6dwpkXo5k65SunSpO8Q==
+-----END RSA PRIVATE KEY-----

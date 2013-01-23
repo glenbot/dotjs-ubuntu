@@ -14,7 +14,11 @@ will execute `~/.js/google.com.js`.
 This makes it super  easy to spruce up your favorite
 pages using JavaScript.
 
-Bonus:  files  in `~/.js`  have jQuery 1.6.2 loaded,
+On subdomains such as `http://gist.github.com` dotjs
+will try to load `~/.js/gist.github.com.js`  as well
+as `~/.js/github.com.js` and `~/.js/com.js`.
+
+Bonus:  files  in `~/.js`  have jQuery 1.9  loaded,
 regardless  of  whether  the  site  you're  hacking
 uses jQuery.
 
@@ -31,12 +35,13 @@ modifications. With dotjs, just add or edit files in
 
     $ cat ~/.js/github.com.js
     // swap github logo with trollface
-    $('#header .logo img')
-      .css('width', '100px')
-      .css('margin-top', '-15px')
-      .attr('src', '//bit.ly/ghD24e')
+    $('a.header-logo-blacktocat').html(
+        $('<img>')
+            .attr('src', '//bit.ly/ghD24e')
+            .css({'width': 'auto', 'height': '22px'})
+        );
 
-![](https://bit.ly/gAHTbC)
+![](http://puu.sh/1Kjvw)
 
 ## How It Works
 
@@ -79,10 +84,11 @@ For the impatient run the daemon right away
 
 For the patient reboot and enjoy!
 
-## Chromium vs Google Chrome
+Now open https://localhost:3131 in Chrome and enable the SSL.
 
-Multiple Chromes installed? Drag builds/dotjs.crx to
-whichever is your favorite.
+Then install the Google Chrome extension:
+
+http://bit.ly/dotjs
 
 ## Uninstall
 
@@ -99,7 +105,11 @@ whichever is your favorite.
    stick JavaScript in ~/.js. Do
    you know what I'm saying?"
 
-## Other Browers
+## Windows
+
+- [dotjs-win](https://github.com/p3lim/dotjs-win)
+
+## Other Browsers
 
 - [Firefox Add-on](https://github.com/rlr/dotjs-addon)
 - [Safari Extension](https://github.com/wfarr/dotjs.safariextension)
