@@ -8,8 +8,7 @@ namespace :install do
     puts "\e[1m\e[32mdotjs\e[0m"
     puts "\e[1m-----\e[0m"
     puts "I will install:", ""
-    puts "1. The 'dotjs' Google Chrome Extension"
-    puts "2. djsd(1) in ~/bin"
+    puts "1. djsd(1) in ~/bin"
     print "Ok? (y/n) "
 
     begin
@@ -27,6 +26,7 @@ namespace :install do
   task :done do
     puts "\e[1m\e[32mdotjs installation worked\e[0m"
     puts "Add `@reboot /path/to/home/bin/djsd -d` to your crontab"
+    puts "open https://localhost:3131 in chrome to enable ssl"
   end
 
   desc "Install dotjs daemon"
@@ -40,12 +40,8 @@ namespace :install do
 
   desc "Install Google Chrome extension"
   task :chrome do
-    puts "Installing Google Chrome extension..."
-    if File.exists?('/opt/google/chrome/google-chrome')
-      sh "/opt/google/chrome/google-chrome builds/dotjs.crx &"
-    elsif File.exists?('/usr/bin/chromium-browser')
-      sh "/usr/bin/chromium-browser builds/dotjs.crx &"
-    end
+    puts "", "\e[31mIMPORTANT!\e[0m Install the Google Chrome extension:"
+    puts "http://bit.ly/dotjs", ""
   end
 end
 
