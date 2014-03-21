@@ -49,10 +49,9 @@ Chrome extensions can't access the local filesystem,
 so dotjs  runs a tiny  web server on port  3131 that
 serves files out of ~/.js.
 
-You don't  have to worry about  starting or stopping
-this web server because  we put a pretty great plist
-into  ~/Library/LaunchAgents that  handles  all that
-for us.
+The ```dotjs``` executable is installed into `~/bin`
+and then should be added into [crontab](#install),
+so that the server's started when the OS starts.
 
 The dotjs Chrome extension then makes ajax requests
 to http://localhost:3131/convore.com.js any time you
