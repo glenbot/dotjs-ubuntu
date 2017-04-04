@@ -58,6 +58,12 @@ to http://localhost:3131/convore.com.js any time you
 hit a page on convore.com, for example, and executes
 the returned JavaScript.
 
+# SSL certificate
+
+In Google Chrome the server will give an error saying that the Certificate Authority is invalid.
+You can simply go to: Settings > Show advanced settings > HTTPS/SSL > Manage certificates > Authorities > Import
+Here you can upload the `cert.pem` file in this project.
+
 ## Requires
 
 - Ubuntu
